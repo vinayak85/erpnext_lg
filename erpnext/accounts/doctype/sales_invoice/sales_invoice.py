@@ -52,7 +52,7 @@ class SalesInvoice(SellingController):
 			self.indicator_title = _("Paid")
 
 	def validate(self):
-		frappe.msgprint(_("aaavvvggg"))
+		frappe.msgprint(_("vvvvpppp"))
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()
 
