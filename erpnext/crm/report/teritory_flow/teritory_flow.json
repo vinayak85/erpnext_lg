@@ -1,0 +1,25 @@
+{
+ "add_total_row": 0, 
+ "apply_user_permissions": 1, 
+ "creation": "2017-08-07 15:11:11.317094", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "letter_head": "Lysten Global", 
+ "modified": "2017-08-07 15:34:02.630032", 
+ "modified_by": "Administrator", 
+ "module": "CRM", 
+ "name": "Teritory_Flow", 
+ "owner": "Administrator", 
+ "query": "\nselect  `territory_name` as 'HQ' from `tabTerritory` where `tabTerritory`.`parent_territory` in (select (GROUP_CONCAT(`territory_name`)) as 'Area' from `tabTerritory` where `tabTerritory`.`parent_territory`='Kolhapur(Region)' GROUP BY `tabTerritory`.`parent_territory);\n", 
+ "ref_doctype": "CRM", 
+ "report_name": "Teritory_Flow", 
+ "report_type": "Query Report", 
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ]
+}
