@@ -15,6 +15,7 @@ class calculate_taxes_and_totals(object):
 		self.calculate()
 
 	def calculate(self):
+		frappe.msgprint(_("vvvggg"))
 		self.discount_amount_applied = False
 		self._calculate()
 
