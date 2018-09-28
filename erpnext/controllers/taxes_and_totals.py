@@ -68,6 +68,19 @@ class calculate_taxes_and_totals(object):
 				item.amount = flt(item.rate * item.qty,	item.precision("amount"))
 				item.net_amount = item.amount
 
+				#Arjun Code Start
+				
+				if item.doctype in ['Sales Invoice Item']:
+					if item.discount_amount > 0 :
+						#frappe.msgprint(_(item.discount_amount))
+						item.net_amount = flt(item.amount-item.discount_amount,	item.precision("net_amount"))
+						if item.amount < 0 :#code for credit note
+							item.net_amount = flt(item.amount+item.discount_amount,	item.precision("net_amount"))
+						#item.amount = flt(item.amount-item.discount_amount,	item.precision("amount"))
+						#item.base_net_amount = flt(item.amount-item.discount_amount,	item.precision("base_net_amount"))
+				
+				#Arjun Code End	
+				
 				self._set_in_company_currency(item, ["price_list_rate", "rate", "net_rate", "amount", "net_amount"])
 
 				item.item_tax_amount = 0.0
@@ -160,14 +173,23 @@ class calculate_taxes_and_totals(object):
 
 	def calculate_net_total(self):
 		self.doc.total = self.doc.base_total = self.doc.net_total = self.doc.base_net_total = 0.0
+		
+		#arjun code start
+		self.doc.total_discount=0.0
+		#arjun code End
 
 		for item in self.doc.get("items"):
 			self.doc.total += item.amount
 			self.doc.base_total += item.base_amount
 			self.doc.net_total += item.net_amount
 			self.doc.base_net_total += item.base_net_amount
+			
+			#arjun code start
+			self.doc.total_discount += item.discount_amount
+			#arjun code End
 
-		self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
+		#self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
+		self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total", "total_discount"])		
 
 	def calculate_taxes(self):
 		# maintain actual tax rate based on idx
@@ -444,6 +466,15 @@ class calculate_taxes_and_totals(object):
 			self.doc.round_floats_in(self.doc, ["paid_amount"])
 			self.calculate_write_off_amount()
 			self.calculate_change_amount()
+			
+			#arjun code strat 
+			total_disc_amount_on_item = self.doc.total_discount
+			#total grand_total "grand_total"
+			total_amount_to_pay = flt(flt(self.doc.total_taxes_and_charges) + flt(self.doc.total *
+				self.doc.conversion_rate, self.doc.precision("total")) - self.doc.total_advance
+					- flt(self.doc.base_write_off_amount), self.doc.precision("total"))
+			total_amount_to_pay=flt(total_amount_to_pay - flt(total_disc_amount_on_item))
+			#arjun code end
 			
 			paid_amount = self.doc.paid_amount \
 				if self.doc.party_account_currency == self.doc.currency else self.doc.base_paid_amount
