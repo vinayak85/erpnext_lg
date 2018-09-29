@@ -185,11 +185,11 @@ class calculate_taxes_and_totals(object):
 			self.doc.base_net_total += item.base_net_amount
 			
 			#arjun code start
-			if doc.doctype in ['Sales Invoice']:
+			if self.doc.doctype in ['Sales Invoice']:
 				self.doc.total_discount += item.discount_amount
 			#arjun code End
 
-		if doc.doctype in ['Sales Invoice']:
+		if self.doc.doctype in ['Sales Invoice']:#if self.doc.doctype == "Sales Invoice":
 			#self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
 			self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total", "total_discount"])		
 		else:
