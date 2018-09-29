@@ -185,11 +185,15 @@ class calculate_taxes_and_totals(object):
 			self.doc.base_net_total += item.base_net_amount
 			
 			#arjun code start
-			self.doc.total_discount += item.discount_amount
+			if doc.doctype in ['Sales Invoice']:
+				self.doc.total_discount += item.discount_amount
 			#arjun code End
 
-		#self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
-		self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total", "total_discount"])		
+		if doc.doctype in ['Sales Invoice']:
+			#self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
+			self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total", "total_discount"])		
+		else:
+			self.doc.round_floats_in(self.doc, ["total", "base_total", "net_total", "base_net_total"])
 
 	def calculate_taxes(self):
 		# maintain actual tax rate based on idx
